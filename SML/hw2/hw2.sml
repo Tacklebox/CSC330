@@ -6,20 +6,29 @@ fun same_string(s1 : string, s2 : string) =
 
 (* put your solutions for Part 1 here *)
 
+fun all_except_option(target, xs) =
+  case xs of
+       [] => NONE
+     | x::xs' =>
+         (case same_string(target, x) of
+              true => SOME xs'
+            | false => (case all_except_option(target, xs') of
+                            NONE => NONE
+                          | SOME xs'' => SOME (x::xs'')))
 
 (************************************************************************)
 (* Game  *)
 
 (* you may assume that Num is always used with valid values 2, 3, ..., 10 *)
 
-datatype suit = Clubs | Diamonds | Hearts | Spades
-datatype rank = Jack | Queen | King | Ace | Num of int
-type card = suit * rank
+(* datatype suit = Clubs | Diamonds | Hearts | Spades *)
+(* datatype rank = Jack | Queen | King | Ace | Num of int *)
+(* type card = suit * rank *)
 
-datatype color = Red | Black
-datatype move = Discard of card | Draw
+(* datatype color = Red | Black *)
+(* datatype move = Discard of card | Draw *)
 
 
-exception IllegalMove
+(* exception IllegalMove *)
 
 (* put your solutions for Part 2 here *)
