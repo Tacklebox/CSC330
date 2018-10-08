@@ -70,8 +70,8 @@ fun longest_string2(xs: string list): string =
     longest_string2 but is more general because it takes a function as an argument.
   • longest_string3 and longest_string4 are defined with val-bindings and
     partial applications of longest_string_helper. *)
-fun longest_string_helper(the_func: int * int -> bool): string list -> string =
-  foldl (fn (x,ls) => if the_func(String.size(x), String.size(ls)) then ls else x) ""
+fun longest_string_helper(f: int * int -> bool): string list -> string =
+  foldl (fn (x,ls) => if f (String.size(x), String.size(ls)) then ls else x) ""
 
 val longest_string3: string list -> string = longest_string_helper(fn (x,y) => x <= y)
 val longest_string4: string list -> string = longest_string_helper(fn (x,y) => x < y)
@@ -98,20 +98,11 @@ val rev_string = String.implode o List.rev o String.explode
  * the first argument returns NONE for all list elements, then first_answer
  * should raise the exception NoAnswer . Hints: Sample solution is 5 lines and
  * does nothing fancy. *)
-fun first_answer(the_func) =
-  fn xs => case ((map isSome) o (map the_func)) xs of
-    [] => raise NoAnswer,
+fun first_answer f xs =
+  case List.mapPartial f xs of
+    [] => raise NoAnswer
   | x::_ => x
 
-val test_first_answer =
-    ("7. test first_answer", [
-      first_answer (fn x => if (x mod 2) = 0 then SOME x else NONE) [1,1,4,3] = 4,
-      first_answer (fn x => if x > 3 then SOME x else NONE) [1,2,3,4,5] = 4,
-      first_answer (fn x => SOME x) [1,2,3,4,5] = 1,
-      first_answer (fn x => NONE) [1,2,3,4,5] = 1 handle NoAnswer  => true,
-      first_answer (fn x => if (x mod 2) = 0 then SOME x else NONE) [1,1,5,3] = 10 handle NoAnswer => true,
-      first_answer (fn x => if String.size(x) = 3 then SOME x else NONE) ["this", "is", "the", "end", "of", "the", "world"] = "the"
-    ]);
 (* Question 8
  * Write a function all_answers of type (’a -> ’b list option) -> ’a list -> ’b
  * list option (notice the 2 arguments are curried). The first argument should
@@ -123,11 +114,37 @@ val test_first_answer =
  * Hints: The sample solution is 8 lines. It uses a helper function with an
  * accumulator and uses @ . Note all_answers f [] should evaluate to SOME [] .
  *)
+fun all_answers f xs =
+  let 
+    fun noneProp (NONE, _) = NONE
+      | noneProp (_, NONE) = NONE
+      | noneProp (SOME a, SOME b) = SOME (a @ b);
+    fun applyf (x,y) = (f(x),y);
+  in
+    foldl (noneProp o applyf) (SOME []) xs
+  end
 
 (* Question 9 *)
+
+(* Part A *)
+(* g is a function that takes 3 curried parameters: f1, f2, and p. it computes the
+ * bindings that are produced when evaluating a mini-version of SML *)
+
+(* Part B *)
+fun count_wildcards p =
+  g (fn _ => 1) (fn _ => 0) p
+
+(* Part C *)
+fun count_wild_and_variable_lengths p =
+  g (fn _ => 1) (fn var => String.size var) p
+
+(* Part D *)
+fun count_some_var(s, p) =
+  g (fn _ => 0) (fn var => if var = s then 1 else 0) p
 
 (* Question 10 *)
 
 (* Question 11 *)
 
 (* Question 12 *)
+
