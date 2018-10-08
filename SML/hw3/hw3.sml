@@ -43,16 +43,6 @@ fun g f1 f2 p =
 fun only_capitals(xs: string list): string list =
   List.filter (fn x => Char.isUpper(String.sub(x,0))) xs
 
-val words = ["This","the","A","Hello","World","not"];
-val test_only_capitals =
-    ("1. test_only_capitals",[
-      only_capitals(words) = ["This","A","Hello","World"],
-      only_capitals ["A","B","C"] =  ["A","B","C"],
-      only_capitals [] =  [],
-      only_capitals(["Mexico","Ottawa"]) = ["Mexico", "Ottawa"],
-      only_capitals(["vancouver","Ottawa","Victoria"]) = ["Ottawa", "Victoria"]
-    ]);
-
 (* Question 2
  * Write a function longest_string1 that takes a string list and returns the
  * longest string in the list. If the list is empty, return "". In the case of a
@@ -91,12 +81,14 @@ val longest_string4: string list -> string = longest_string_helper(fn (x,y) => x
  * longest string in the list that begins with an uppercase letter (or "" if
  * there are no such strings). Use a val-binding and the ML library’s o operator
  * for composing functions. Resolve ties like in problem 2. *)
+val longest_capitalized = longest_string1 o only_capitals
 
 (* Question 6
  * Write a function rev_string that takes a string and returns the string that
  * is the same characters in reverse order. Use ML’s o operator, the library
  * function rev for reversing lists, and two library functions in the String
  * module (browse the module documentation to find the most useful functions.) *)
+val rev_string = String.implode o List.rev o String.explode
 
 (* Question 7
  * Write a function first_answer that has type (’a -> ’b option) -> ’a list -> ’b.
@@ -106,6 +98,8 @@ val longest_string4: string list -> string = longest_string_helper(fn (x,y) => x
  * the first argument returns NONE for all list elements, then first_answer
  * should raise the exception NoAnswer . Hints: Sample solution is 5 lines and
  * does nothing fancy. *)
+fun first_answer(the_func) =
+
 
 (* Question 8
  * Write a function all_answers of type (’a -> ’b list option) -> ’a list -> ’b
