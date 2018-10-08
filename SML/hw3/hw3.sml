@@ -99,8 +99,19 @@ val rev_string = String.implode o List.rev o String.explode
  * should raise the exception NoAnswer . Hints: Sample solution is 5 lines and
  * does nothing fancy. *)
 fun first_answer(the_func) =
+  fn xs => case ((map isSome) o (map the_func)) xs of
+    [] => raise NoAnswer,
+  | x::_ => x
 
-
+val test_first_answer =
+    ("7. test first_answer", [
+      first_answer (fn x => if (x mod 2) = 0 then SOME x else NONE) [1,1,4,3] = 4,
+      first_answer (fn x => if x > 3 then SOME x else NONE) [1,2,3,4,5] = 4,
+      first_answer (fn x => SOME x) [1,2,3,4,5] = 1,
+      first_answer (fn x => NONE) [1,2,3,4,5] = 1 handle NoAnswer  => true,
+      first_answer (fn x => if (x mod 2) = 0 then SOME x else NONE) [1,1,5,3] = 10 handle NoAnswer => true,
+      first_answer (fn x => if String.size(x) = 3 then SOME x else NONE) ["this", "is", "the", "end", "of", "the", "world"] = "the"
+    ]);
 (* Question 8
  * Write a function all_answers of type (’a -> ’b list option) -> ’a list -> ’b
  * list option (notice the 2 arguments are curried). The first argument should
