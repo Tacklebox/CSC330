@@ -160,6 +160,18 @@ fun check_pat p =
   end
 
 (* Question 11 *)
+fun match (_, Wildcard)        = SOME []
+  | match (Unit, UnitP)        = SOME []
+  | match (_, UnitP)           = NONE
+  | match (v, Variable s)      = SOME [(s, v)]
+  | match (Const v, ConstP vP) = if v = vP then SOME [] else NONE
+  | match (_, ConstP _)        = NONE
+  | match (Constructor(s2,v), ConstructorP(s1,p)) =
+    if s1 = s2 then match(v,p) else NONE
+  | match (_, ConstructorP(_,_)) = NONE
+  | match (Tuple vs, TupleP ps) =
+  if List.length(vs) <> List.length(ps) then NONE
+  else all_answers match (ListPair.zip(vs,ps))
+  | match (_, TupleP _) = NONE
 
 (* Question 12 *)
-
