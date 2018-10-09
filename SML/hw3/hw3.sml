@@ -171,7 +171,8 @@ fun match (_, Wildcard)        = SOME []
   | match (_, ConstructorP(_,_)) = NONE
   | match (Tuple vs, TupleP ps) =
   if List.length(vs) <> List.length(ps) then NONE
-  else all_answers match (ListPair.zip(vs,ps))
+  else all_answers match (List.rev (ListPair.zip(vs,ps)))
   | match (_, TupleP _) = NONE
 
 (* Question 12 *)
+
