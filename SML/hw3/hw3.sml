@@ -115,7 +115,7 @@ fun first_answer f xs =
  * accumulator and uses @ . Note all_answers f [] should evaluate to SOME [] .
  *)
 fun all_answers f xs =
-  let 
+  let
     fun noneProp (NONE, _) = NONE
       | noneProp (_, NONE) = NONE
       | noneProp (SOME a, SOME b) = SOME (a @ b);
@@ -143,6 +143,21 @@ fun count_some_var(s, p) =
   g (fn _ => 0) (fn var => if var = s then 1 else 0) p
 
 (* Question 10 *)
+fun check_pat p =
+  let
+    fun get_all_variables p =
+      case p of
+           Variable x        => [x]
+         | ConstructorP(_,p) => get_all_variables(p)
+         | TupleP ps         =>
+             List.foldl (fn (p, acc) => get_all_variables(p) @ acc) [] ps
+         | _                 => [];
+    val all_variables = get_all_variables(p);
+    val set = foldl (fn (x, acc) => if List.exists (fn x_acc => x = x_acc) acc
+                                    then acc else x::acc) []
+  in
+      List.length(set(all_variables)) = List.length(all_variables)
+  end
 
 (* Question 11 *)
 
