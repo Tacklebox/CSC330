@@ -176,3 +176,10 @@ fun match (_, Wildcard)        = SOME []
 
 (* Question 12 *)
 
+fun first_match v ps =
+  let
+    val ps' = List.map (fn p => (v,p)) ps
+  in
+    SOME(first_answer match ps')
+    handle NoAnswer => NONE
+  end
