@@ -152,9 +152,9 @@ fun check_pat p =
          | TupleP ps         =>
              List.foldl (fn (p, acc) => get_all_variables(p) @ acc) [] ps
          | _                 => [];
+    fun set xs = foldl (fn (x, acc) => if List.exists (fn x_acc => x = x_acc) acc
+                                    then acc else x::acc) [] xs
     val all_variables = get_all_variables(p);
-    val set = foldl (fn (x, acc) => if List.exists (fn x_acc => x = x_acc) acc
-                                    then acc else x::acc) []
   in
       List.length(set(all_variables)) = List.length(all_variables)
   end
