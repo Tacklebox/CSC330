@@ -26,7 +26,7 @@
   (cond
     [(negative? n) (error "list-nth-mod: negative number")]
     [(empty? xs)   (error "list-nth-mod: empty list")]
-    [#t (car (list-tail (remainder n (length xs))))]
+    [#t (car (list-tail xs (remainder n (length xs))))]
    )
   )
 
