@@ -7,7 +7,7 @@
 ;;
 
 (define (sequence low high stride)
-  (if (< low high) (cons low (sequence (+ low stride) high stride)) null))
+  (if (<= low high) (cons low (sequence (+ low stride) high stride)) null))
 ; tests
 ; (sequence 3 11 2) -> `(3 5 7 9 11)
 ; (sequence 3 8 3) -> `(3 6)
@@ -16,10 +16,19 @@
 (define (string-append-map xs suffix)
   (map (lambda (element) (string-append element suffix)) xs))
 ; tests
-; (string-append-map `("Beer" "Soda" "Milk") " is my favourite drink.") -> `("Beer is my favourite drink." "Soda is my favourite drink." "Milk is my favourite drink.") 
+; (string-append-map `("Beer" "Soda" "Milk") " is my favourite drink.") ->
+; `("Beer is my favourite drink."
+;   "Soda is my favourite drink."
+;   "Milk is my favourite drink.")
 
 
-(define list-nth-mod null)
+(define (list-nth-mod xs n) 
+  (cond
+    [(negative? n) (error "list-nth-mod: negative number")]
+    [(empty? xs)   (error "list-nth-mod: empty list")]
+    [#t (car (list-tail (remainder n (length xs))))]
+   )
+  )
 
 (define stream-for-n-steps null)
 
@@ -35,5 +44,3 @@
 (define vector-assoc null)
 
 (define cached-assoc null)
-
-
