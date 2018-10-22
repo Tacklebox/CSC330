@@ -31,9 +31,10 @@
 
 (define (stream-for-n-steps s n)
   (cond
-    [(= n 0) (null)]
+    [(= n 0) null]
     [(> n 0) (
-              let ([stream-item (s)]) (cons (car stream-item) (stream-for-n-steps (cdr stream-item) (- n 1)))
+              let ([stream-item (s)])
+                (cons (car stream-item) (stream-for-n-steps (cdr stream-item) (- n 1)))
               )]
     [#t (error "Unexpected input")]
    ))
