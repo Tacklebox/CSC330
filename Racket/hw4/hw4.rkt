@@ -22,15 +22,21 @@
 ;   "Milk is my favourite drink.")
 
 
-(define (list-nth-mod xs n) 
+(define (list-nth-mod xs n)
   (cond
     [(negative? n) (error "list-nth-mod: negative number")]
     [(empty? xs)   (error "list-nth-mod: empty list")]
     [#t (car (list-tail xs (remainder n (length xs))))]
-   )
-  )
+   ))
 
-(define stream-for-n-steps null)
+(define (stream-for-n-steps s n)
+  (cond
+    [(= n 0) (null)]
+    [(> n 0) (
+              let ([stream-item (s)]) (cons (car stream-item) (stream-for-n-steps (cdr stream-item) (- n 1)))
+              )]
+    [#t (error "Unexpected input")]
+   ))
 
 (define funny-number-stream null)
 
