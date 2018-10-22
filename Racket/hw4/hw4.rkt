@@ -39,7 +39,15 @@
     [#t (error "Unexpected input")]
    ))
 
-(define funny-number-stream null)
+(define (funny-number-stream)
+  (letrec
+    ([funny-number-stream-helper (lambda (n)
+      (cons
+        (if (= 0 (remainder n 5)) (* -1 n) n)
+        (lambda () (funny-number-stream-helper (+ 1 n)))
+      ))])
+    (funny-number-stream-helper 1)
+   ))
 
 (define cat-then-dog null)
 
