@@ -69,11 +69,11 @@
    ; funny-number-stream test
    (check-equal? (handler (stream-for-n-steps funny-number-stream 16)) (list 1 2 3 4 -5 6 7 8 9 -10 11 12 13 14 -15 16) "funny-number-stream test")
 
-   #| (check-equal? (handler (stream-for-n-steps cat-then-dog 1)) (list "cat.jpg") "cat-then-dog test") |#
+   (check-equal? (handler (stream-for-n-steps cat-then-dog 1)) (list "cat.jpg") "cat-then-dog test")
 
-   #| (check-equal? (handler (stream-for-n-steps cat-then-dog 3)) (list "cat.jpg" "dog.jpg" "cat.jpg") "cat-then-dog test") |#
+   (check-equal? (handler (stream-for-n-steps cat-then-dog 3)) (list "cat.jpg" "dog.jpg" "cat.jpg") "cat-then-dog test")
 
-   #| (check-equal? (handler (stream-for-n-steps cat-then-dog 4)) (list "cat.jpg" "dog.jpg" "cat.jpg" "dog.jpg") "cat-then-dog test") |#
+   (check-equal? (handler (stream-for-n-steps cat-then-dog 4)) (list "cat.jpg" "dog.jpg" "cat.jpg" "dog.jpg") "cat-then-dog test")
 
    #| ; stream-add-zero test |#
    #| (check-equal? (handler (stream-for-n-steps (stream-add-zero ones) 1)) (list (cons 0 1)) "stream-add-zero test") |#

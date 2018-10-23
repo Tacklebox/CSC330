@@ -49,7 +49,13 @@
     (funny-number-stream-helper 1)
    ))
 
-(define cat-then-dog null)
+(define (cat-then-dog)
+  (letrec
+    ([cat-thunker (lambda ()
+                    (cons "cat.jpg" dog-thunker))]
+     [dog-thunker (lambda ()
+                    (cons "dog.jpg" cat-thunker))])
+    (cat-thunker)))
 
 (define stream-add-zero null)
 
