@@ -27,27 +27,27 @@
     [(negative? n) (error "list-nth-mod: negative number")]
     [(empty? xs)   (error "list-nth-mod: empty list")]
     [#t (car (list-tail xs (remainder n (length xs))))]
-   ))
+    ))
 
 (define (stream-for-n-steps s n)
   (cond
     [(= n 0) null]
     [(> n 0) (
               let ([stream-item (s)])
-                (cons (car stream-item) (stream-for-n-steps (cdr stream-item) (- n 1)))
+              (cons (car stream-item) (stream-for-n-steps (cdr stream-item) (- n 1)))
               )]
     [#t (error "Unexpected input")]
-   ))
+    ))
 
 (define (funny-number-stream)
   (letrec
     ([funny-number-stream-helper (lambda (n)
-      (cons
-        (if (= 0 (remainder n 5)) (* -1 n) n)
-        (lambda () (funny-number-stream-helper (+ 1 n)))
-      ))])
+                                   (cons
+                                     (if (= 0 (remainder n 5)) (* -1 n) n)
+                                     (lambda () (funny-number-stream-helper (+ 1 n)))
+                                     ))])
     (funny-number-stream-helper 1)
-   ))
+    ))
 
 (define (cat-then-dog)
   (letrec
@@ -57,7 +57,11 @@
                     (cons "dog.jpg" cat-thunker))])
     (cat-thunker)))
 
-(define stream-add-zero null)
+(define (stream-add-zero s)
+  (let
+    ([stream-item (s)])
+    (lambda () (cons (cons 0 (car stream-item)) (stream-add-zero (cdr stream-item))))
+  ))
 
 
 (define cycle-lists null)
