@@ -61,10 +61,14 @@
   (let
     ([stream-item (s)])
     (lambda () (cons (cons 0 (car stream-item)) (stream-add-zero (cdr stream-item))))
-  ))
+    ))
 
 
-(define cycle-lists null)
+(define (cycle-lists xs ys)
+  (lambda ()
+    (cons (cons (car xs) (car ys))
+          (cycle-lists (append (cdr xs) (list (car xs))) (append (cdr ys) (list (car ys))))
+          )))
 
 (define vector-assoc null)
 

@@ -80,20 +80,20 @@
     (check-equal? (handler (stream-for-n-steps (stream-add-zero ones) 0)) (list ) "stream-add-zero test 2")
     (check-equal? (handler (stream-for-n-steps (stream-add-zero ones) 3)) (list (cons 0 1) (cons 0 1) (cons 0 1)) "stream-add-zero test 3")
 
-    #| ; cycle-lists test |#
-    #| (check-equal? (handler |#
-                              #|                  (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3)) |#
-                     #|               (list (cons 1 "a") (cons 2 "b") (cons 3 "a")) |#
-                     #|               "cycle-lists test") |#
+    ; cycle-lists test
+    (check-equal? (handler
+                                               (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3))
+                                   (list (cons 1 "a") (cons 2 "b") (cons 3 "a"))
+                                   "cycle-lists test")
 
-    #| (check-equal? (handler |#
-                              #|                  (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 4)) |#
-                     #|               (list (cons 1 "a") (cons 2 "a") (cons 3 "a") (cons 1 "a")) |#
-                     #|               "cycle-lists test 2") |#
+    (check-equal? (handler
+                                               (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 4))
+                                   (list (cons 1 "a") (cons 2 "a") (cons 3 "a") (cons 1 "a"))
+                                   "cycle-lists test 2")
 
-    #| (check-equal? (handler (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 0)) |#
-                     #|               (list) |#
-                     #|               "cycle-lists test 3") |#
+    (check-equal? (handler (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 0))
+                                   (list)
+                                   "cycle-lists test 3")
 
 
     #| ; vector-assoc test |#
