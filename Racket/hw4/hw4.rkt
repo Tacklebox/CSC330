@@ -70,6 +70,15 @@
           (cycle-lists (append (cdr xs) (list (car xs))) (append (cdr ys) (list (car ys))))
           )))
 
-(define vector-assoc null)
+(define (vector-assoc v vec [eqf equal?])
+    (letrec
+      ([vector-assoc-helper (lambda (index)
+                              (cond
+                                [(= index (vector-length vec)) #f]
+                                [(eqf v (car (vector-ref vec index))) (vector-ref vec index)]
+                                [#t (vector-assoc-helper (+ 1 index))]
+                                ))])
+      (vector-assoc-helper 0)
+      ))
 
 (define cached-assoc null)

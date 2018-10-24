@@ -96,16 +96,16 @@
                                    "cycle-lists test 3")
 
 
-    #| ; vector-assoc test |#
-    #| (check-equal? (handler |#
-                              #|                 (vector-assoc 4 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))) |#
-                     #|               (cons 4 1) "vector-assoc test") |#
-    #| (check-equal? (handler |#
-                              #|                 (vector-assoc 1 (vector (cons 1 "1") "hi" (cons 2 "2") (cons 3 "3") (cons 4 "4")))) |#
-                     #|                 (cons 1 "1") "vector-assoc test") |#
-    #| (check-equal? (handler |#
-                              #|                 (vector-assoc -5 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))) |#
-                     #|                  #f "vector-assoc test") |#
+    ; vector-assoc test
+    (check-equal? (handler
+                    (vector-assoc 4 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1))))
+                  (cons 4 1) "vector-assoc test")
+    (check-equal? (handler
+                    (vector-assoc 1 (vector (cons 1 "1") "hi" (cons 2 "2") (cons 3 "3") (cons 4 "4"))))
+                  (cons 1 "1") "vector-assoc test")
+    (check-equal? (handler
+                    (vector-assoc -5 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1))))
+                  #f "vector-assoc test")
 
     #| ; cached-assoc tests |#
     #| (check-equal? (handler |#
