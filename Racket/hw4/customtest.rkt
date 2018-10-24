@@ -107,16 +107,16 @@
                     (vector-assoc -5 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1))))
                   #f "vector-assoc test")
 
-    #| ; cached-assoc tests |#
-    #| (check-equal? (handler |#
-                              #|                  ((cached-assoc  (list (cons 1 2) (cons 3 4)) 3) 3)) |#
-                     #|               (cons 3 4) "cached-assoc test") |#
-    #| (check-equal? (handler |#
-                              #|                  ((cached-assoc  (list (cons 1 "1") (cons 2 "2") (cons 3 "3") (cons 4 "4")) 10) 1)) |#
-                     #|               (cons 1 "1") "vector-assoc test 2") |#
-    #| (check-equal? (handler |#
-                              #|                  ((cached-assoc  (list (cons 1 "1") (cons 2 "2") (cons 3 "3") (cons 4 "4")) 10) 5)) |#
-                     #|               #f "vector-assoc test 3") |#
+    ; cached-assoc tests
+    (check-equal? (handler
+                    ((cached-assoc  (list (cons 1 2) (cons 3 4)) 3) 3))
+                  (cons 3 4) "cached-assoc test")
+    (check-equal? (handler
+                    ((cached-assoc  (list (cons 1 "1") (cons 2 "2") (cons 3 "3") (cons 4 "4")) 10) 1))
+                  (cons 1 "1") "vector-assoc test 2")
+    (check-equal? (handler
+                    ((cached-assoc  (list (cons 1 "1") (cons 2 "2") (cons 3 "3") (cons 4 "4")) 10) 5))
+                  #f "vector-assoc test 3")
 
     #| ; while-less test |#
 
