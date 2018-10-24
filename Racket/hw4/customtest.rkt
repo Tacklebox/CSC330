@@ -82,18 +82,18 @@
 
     ; cycle-lists test
     (check-equal? (handler
-                                               (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3))
-                                   (list (cons 1 "a") (cons 2 "b") (cons 3 "a"))
-                                   "cycle-lists test")
+                    (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3))
+                  (list (cons 1 "a") (cons 2 "b") (cons 3 "a"))
+                  "cycle-lists test")
 
     (check-equal? (handler
-                                               (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 4))
-                                   (list (cons 1 "a") (cons 2 "a") (cons 3 "a") (cons 1 "a"))
-                                   "cycle-lists test 2")
+                    (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 4))
+                  (list (cons 1 "a") (cons 2 "a") (cons 3 "a") (cons 1 "a"))
+                  "cycle-lists test 2")
 
     (check-equal? (handler (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a")) 0))
-                                   (list)
-                                   "cycle-lists test 3")
+                  (list)
+                  "cycle-lists test 3")
 
 
     ; vector-assoc test
@@ -118,18 +118,18 @@
                     ((cached-assoc  (list (cons 1 "1") (cons 2 "2") (cons 3 "3") (cons 4 "4")) 10) 5))
                   #f "vector-assoc test 3")
 
-    #| ; while-less test |#
+    ; while-less test
 
-    #| (check-equal? (handler |#
-                              #|               (eval (syntax (let ((a 0)) (while-less 7 do (begin (set! a (+ a 1)) a)) a)) |#
-                                                     #|                     )) 7 "while-less test 1") |#
+    (check-equal? (handler
+                    (eval (syntax (let ((a 0)) (while-less 7 do (begin (set! a (+ a 1)) a)) a))
+                          )) 7 "while-less test 1")
 
-    #| (check-equal? (handler |#
-                              #|               (eval (syntax (let ((a 10)) (while-less 7 do (begin (set! a (+ a 1)) a)) a) |#
-                                                             #|                     ))) 11 "while-less test 2") |#
+    (check-equal? (handler
+                    (eval (syntax (let ((a 10)) (while-less 7 do (begin (set! a (+ a 1)) a)) a)
+                                  ))) 11 "while-less test 2")
 
-    #| (check-equal? (handler |#
-                              #|                (eval (syntax (while-less 7 do 10)))) #t "while-less return value") |#
+    (check-equal? (handler
+                    (eval (syntax (while-less 7 do 10)))) #t "while-less return value")
 
     ))
 

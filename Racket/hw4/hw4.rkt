@@ -108,3 +108,17 @@
               [#t #f]
               )))))
 
+(define-syntax-rule (while-less e1 do e2)
+  (letrec ([assert-number
+             (lambda (maybe-number)
+               (if (not (number? maybe-number))
+                 (raise "Failed mysteriously")
+                 maybe-number))]
+           [v1 (assert-number (#%expression e1))]
+           [while-less-helper
+             (thunk
+               (if (>= (assert-number (#%expression e2)) v1)
+                 #t
+                 (while-less-helper)))])
+    (while-less-helper)
+    ))
