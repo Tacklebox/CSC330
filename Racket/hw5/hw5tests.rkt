@@ -47,7 +47,7 @@
    (test-equal? "MUPL list -> Racket List #3 (empty)"
                 (handler (mupllist->racketlist (aunit)))
                 '())
-                
+
 
    (test-equal? "MUPL List to Rackets List tests"
               ; racketlist->mupllist
@@ -55,7 +55,7 @@
               (list (int 1) (int 2) (int 3) (int 4))
               )
 
-              
+
    )
   )
 
@@ -143,7 +143,7 @@
                 (handler (eval-exp (isaunit (int 10))))
                 (int 0)
                 )
-  
+
    (test-equal? "aunit evaluation"
                 (handler (eval-exp (aunit)))
                 (aunit) )
@@ -151,15 +151,15 @@
    (test-equal? "simple apair"
               (handler (eval-exp (apair (int 1) (aunit))))
               (apair (int 1) (aunit)))
-                                      
-   
+
+
    ))
 
 (define hw5-tests-part-B2
   (test-suite
    "Tests for HW 5 Part B2 creating functions and mlet"
 
-   
+
    (test-equal? "defining a variable using mlet"
                 (handler (eval-exp (mlet "x" (int 5) (var "x"))))
                 (int 5))
@@ -213,7 +213,7 @@
   (test-equal? "more complex mlet expressions"
                 (handler (eval-exp (mlet "x" (int 5) (mlet "x" (add (var "x") (int 1)) (var "x")))))
                 (int 6))
- 
+
 
   (test-equal? "ifgreater with invalid e4"
                (handler (eval-exp (ifgreater (add (int 2) (int 2)) (add (int 2) (int 1)) (add (int 3) (int -3)) (add "wrong" "bad"))))
@@ -223,7 +223,7 @@
   (test-equal? "apair should reduce its contents"
                (handler (eval-exp (apair (fst (apair  (int 3) (int 10))) (int 4))))
                (apair (int 3) (int 4)))
-  
+
   (test-equal? "fst/snd test"
                (handler (eval-exp (apair (fst (apair (int 1) (int 2)))
                                 (snd (apair (int 3) (int 4))) )))
@@ -237,12 +237,12 @@
   (test-equal? "fst should reduce the expression before testing"
                (handler (eval-exp (fst (snd (apair (int 1) (apair (int 2) (int 3)))))))
                (int 2))
-                         
+
   (test-equal? "snd should reduce the expression before testing"
                (handler (eval-exp (snd (snd (apair (int 1) (apair (int 2) (int 3)))))))
                (int 3))
-                         
-  
+
+
   (test-equal? "snd should reduce its expression before returning"
                (handler (eval-exp (snd (apair (add (int 1) (int 2)) (int 4)))))
                (int 4))
@@ -251,7 +251,7 @@
                (handler (eval-exp (isaunit (snd (apair (int 1) (aunit))))))
                (int 1))
   ))
-  
+
 (define hw5-tests-part-B4
   (test-suite
    "Tests for HW 5 Part B4 with complex expressions involving closures"
@@ -272,7 +272,7 @@
                (int 15)
                )
 
-   
+
    (test-equal? "Local scoping. If you get 1730 you have used the wrong environment for the function call"
                (handler (eval-exp (mlet "f1"
                                (fun #f "a" (mlet "x"
@@ -286,8 +286,8 @@
                                      (call (var "f3") (call (var "f1") (int 1)))))))
                (int 2)
                )
-  
-  
+
+
   (test-equal? "Sum over list: test of recursive function"
                (handler (eval-exp (mlet "fnc"
                                (fun "f1" "x"
@@ -318,34 +318,34 @@
                 (handler (eval-exp (add (add (int 1) (int 2)) (add (int 3) (int 4)))))
                 (int 10)
                 )
-   
+
    ; mlet and var
    (test-equal? "mlet and var 1"
                 (handler (eval-exp (mlet "x" (add (int 1) (int 1)) (var "x"))))
                 (int 2)
                 )
-   
+
    (test-equal? "mlet and var 2"
                 (handler (eval-exp (mlet "x" (int 1) (var "x"))))
                 (int 1)
                 )
-              
+
    (test-equal? "fun evaluation"
                 (handler (eval-exp (fun #f "x" (var "x"))))
                 (closure '() (fun #f "x" (var "x")))
                 )
-   
+
    (test-equal? "mlet and fun evaluation"
                 (handler (eval-exp (mlet "x" (int 1) (fun #f "a" (var "x")))))
                 (closure (list (cons "x" (int 1))) (fun #f "a" (var "x")))
                 )
-    
+
    (test-equal? "complex ifgreater, false"
                 (handler (eval-exp (ifgreater (add (int 0)(int 1)) (add (int 0)(int 2)) (int 3) (int 4))))
                 (int 4)
                 )
 
-   
+
    (test-equal? "complex ifgreater, false 2"
                 (handler (eval-exp (ifgreater (int 1) (int 2) (int 3) (add (int 2)(int 2)))))
                 (int 4)
@@ -357,47 +357,47 @@
    (test-equal? "complex ifgreater, true 2"
                 (handler (eval-exp (ifgreater (int 2) (int 1) (add (int 1)(int 2)) (int 4))))
                 (int 3))
-   
+
    (test-equal? "int apair"
                 (handler (eval-exp (apair (int 1) (int 1))))
                 (apair (int 1) (int 1)))
-   
+
    (test-equal? "var apair"
                 (handler (eval-exp (mlet "x" (int 1) (apair (var "x") (var "x")))))
                 (apair (int 1) (int 1))
                 )
-   
+
    ; fst
-   
+
    (test-equal? "mlet and fst"
                  (handler (eval-exp (mlet "x" (apair (int 1) (int 2)) (fst (var "x")))))
                  (int 1)
                  )
-   
-   
+
+
    ; snd
    (test-equal? "snd evaluation"
                 (handler (eval-exp (snd (apair (int 1) (int 2)))))
                 (int 2)
                 )
-   
+
    (test-equal? "mlet and snd"
                 (handler (eval-exp (mlet "x" (apair (int 1) (int 2)) (snd (var "x")))))
                 (int 2)
                 )
-   
+
    ; isaunit
 
    (test-equal? "mlet isaunit true"
                 (handler (eval-exp (mlet "x" (aunit) (isaunit (var "x")))))
                 (int 1)
                 )
-   
+
    (test-equal? "mlet isaunit false"
                 (handler (eval-exp (mlet "x" (int 0) (isaunit (var "x")))))
                 (int 0)
                 )
-   
+
 
    ; call
    (test-equal? "double function, non-recursive."
@@ -416,7 +416,7 @@
                        (call (call (var "range") (int 5)) (int 8)))))
                 (apair (int 5) (apair (int 6) (apair (int 7) (apair (int 8) (aunit)))))
                 )
-   
+
    ))
 
 
@@ -434,16 +434,16 @@
    (test-case "ifgreater exception"
               (check-exn #rx"MUPL" (lambda () (eval-exp (ifgreater "1" (int 2) (int 3) (int 4)))))
               )
-     
+
 
    (test-case "fst exception"
               (check-exn #rx"MUPL" (lambda () (eval-exp (fst (add (int 1) (int 2))))) ))
 
-   
+
    (test-case "snd exception"
               (check-exn #rx"MUPL" (lambda () (eval-exp (snd (add (int 1) (int 2))))) ))
 
-   
+
    (test-case "call exception"
               (check-exn #rx"MUPL" (lambda () (eval-exp (call (int 1) (int 2)))) ))
 
@@ -451,7 +451,7 @@
    (test-case "bad expression exception"
               (check-exn #rx"MUPL" (lambda () (eval-exp (list (int 1) (int 2)))) ))
 
-   
+
 ))
 
 
