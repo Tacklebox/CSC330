@@ -24,16 +24,23 @@
 
 ;; CHANGE (put your solutions here)
 (define (mupllist->racketlist lst)
-  (cond
-    [(aunit? lst) null]
-    [(apair? lst) (cons (if (apair? (apair-e1 lst)) (mupllist->racketlist (apair-e1 lst)) (apair-e1 lst)) (mupllist->racketlist (apair-e2 lst)))]
-    [else lst]
-    ))
+  (letrec
+    ([mupllist? (lambda (possible-mupllist)
+                  (cond
+                    [(aunit? possible-mupllist) #t]
+                    [(apair? possible-mupllist) (mupllist? (apair-e2 possible-mupllist))]
+                    [else #f]
+                  ))])
+    (cond
+      [(aunit? lst) null]
+      [(apair? lst) (cons (if (mupllist? (apair-e1 lst)) (mupllist->racketlist (apair-e1 lst)) (apair-e1 lst)) (mupllist->racketlist (apair-e2 lst)))]
+      [else lst]
+      )))
 
 (define (racketlist->mupllist lst)
   (cond
     [(empty? lst) (aunit)]
-    [(pair? lst) (apair (if (pair? (car lst)) (racketlist->mupllist (car lst)) (car lst)) (racketlist->mupllist (cdr lst)))]
+    [(pair? lst) (apair (if (list? (car lst)) (racketlist->mupllist (car lst)) (car lst)) (racketlist->mupllist (cdr lst)))]
     [else lst]
     ))
 
