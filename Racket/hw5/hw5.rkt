@@ -68,18 +68,16 @@
                (int (+ (int-num v1)
                        (int-num v2)))
                (error "MUPL addition applied to non-number")))]
-        [(int? e) (int-num e)]
         [(ifgreater? e)]
         [(fun? e)]
         [(call? e)]
         [(mlet? e)]
-        [(apair? e)]
         [(fst? e)]
         [(snd? e)]
         [(aunit? e)]
         [(isaunit? e)]
-        ;; "CHANGE" add more cases here
-        ;; one for each type of expression
+        [(apair? e) e]
+        [(int? e) e]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
