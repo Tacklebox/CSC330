@@ -3,7 +3,7 @@
 
 (provide (all-defined-out)) ;; so we can put tests in a second file
 
-;; definition of structures for MUPL programs - Do NOT change
+;; definition of structures for MUPL programs{{{
 (struct var  (string) #:transparent)  ;; a variable, e.g., (var "foo")
 (struct int  (num)    #:transparent)  ;; a constant number, e.g., (int 17)
 (struct add  (e1 e2)  #:transparent)  ;; add two expressions
@@ -16,13 +16,11 @@
 (struct snd  (e)    #:transparent) ;; get second part of a pair
 (struct aunit ()    #:transparent) ;; unit value -- good for ending a list
 (struct isaunit (e) #:transparent) ;; evaluate to 1 if e is unit else 0
-
-;; a closure is not in "source" programs; it is what functions evaluate to
 (struct closure (env fun) #:transparent)
+#| }}} |#
 
-;; Problem A
+;; Problem A {{{
 
-;; CHANGE (put your solutions here)
 (define (mupllist->racketlist lst)
   (letrec
     ([mupllist? (lambda (possible-mupllist)
@@ -43,42 +41,72 @@
     [(pair? lst) (apair (if (list? (car lst)) (racketlist->mupllist (car lst)) (car lst)) (racketlist->mupllist (cdr lst)))]
     [else lst]
     ))
+#| }}} |#
 
 ;; Problem B
 
-;; lookup a variable in an environment
-;; Do NOT change this function
-(define (envlookup env str)
+(define (envlookup env str)#| {{{ |#
   (cond [(null? env) (error "unbound variable during evaluation" str)]
         [(equal? (car (car env)) str) (cdr (car env))]
-        [#t (envlookup (cdr env) str)]))
+        [#t (envlookup (cdr env) str)]))#| }}} |#
 
-;; Do NOT change the two cases given to you.
-;; DO add more cases for other kinds of MUPL expressions.
-;; We will test eval-under-env by calling it directly even though
-;; "in real life" it would be a helper function of eval-exp.
+(define (extend-env env sym val)
+  (cons (cons sym val) env))
+
 (define (eval-under-env e env)
-  (cond [(var? e)
-         (envlookup env (var-string e))]
-        [(add? e)
-         (let ([v1 (eval-under-env (add-e1 e) env)]
-               [v2 (eval-under-env (add-e2 e) env)])
-           (if (and (int? v1)
-                    (int? v2))
-               (int (+ (int-num v1)
-                       (int-num v2)))
-               (error "MUPL addition applied to non-number")))]
-        [(ifgreater? e)]
-        [(fun? e)]
-        [(call? e)]
-        [(mlet? e)]
-        [(fst? e)]
-        [(snd? e)]
-        [(aunit? e)]
-        [(isaunit? e)]
-        [(apair? e) e]
-        [(int? e) e]
-        [#t (error (format "bad MUPL expression: ~v" e))]))
+  (cond
+    [(add? e)#| {{{ |#
+     (let ([v1 (eval-under-env (add-e1 e) env)]
+           [v2 (eval-under-env (add-e2 e) env)])
+       (if (and (int? v1)
+                (int? v2))
+         (int (+ (int-num v1)
+                 (int-num v2)))
+         (error "MUPL addition applied to non-number")))]#| }}} |#
+    [(ifgreater? e)#| {{{ |#
+     (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
+           [v2 (eval-under-env (ifgreater-e2 e) env)]
+           [v3 (thunk (eval-under-env (ifgreater-e3 e) env))]
+           [v4 (thunk (eval-under-env (ifgreater-e4 e) env))])
+       (if (and (int? v1)
+                (int? v2))
+         (if (> (int-num v1) (int-num v2)) (v3) (v4))
+         (error "MUPL isgreater first two arguments must be numbers")))]#| }}} |#
+    [(isaunit? e)#| {{{ |#
+     (let ([u (eval-under-env (isaunit-e e) env)])
+       (if (aunit? u) (int 1) (int 0)))]#| }}} |#
+    [(fst? e) (let ([p (eval-under-env (fst-e e) env)])#| {{{ |#
+       (if (apair? p) (eval-under-env (apair-e1 p) env) (error "MUPL Type Error: fst applied to non-pair")))]#| }}} |#
+    [(snd? e) (let ([p (eval-under-env (snd-e e) env)])#| {{{ |#
+       (if (apair? p) (eval-under-env (apair-e2 p) env) (error "MUPL Type Error: snd applied to non-pair")))]#| }}} |#
+    [(apair? e)#| {{{ |#
+     (apair (eval-under-env (apair-e1 e) env) (eval-under-env (apair-e2 e) env))]#| }}} |#
+    [(aunit? e) e]
+    [(int? e) e]
+    #| B2 test |#
+    [(closure? e) e]
+    [(fun? e) (closure env e)]
+    [(call? e)
+     (let ([clo (eval-under-env (call-funexp) env)]
+           [arg (eval-under-env (call-actual) env)])
+       (if (not (closure? clo))
+         (error "called something that wasnt a function")
+         (let ([cfun (closure-fun clo)]
+               [cenv (closure-env clo)])
+           (eval-under-env
+           (fun-body cfun)
+           (extend-env
+             (if (fun-nameopt cfun)
+               (extend-env cenv (fun-nameopt cfun) clo)
+               cenv)
+             (fun-formal cfun) arg)))))]
+    [(mlet? e)#| {{{ |#
+     (eval-under-env
+       (mlet-body e)
+       (extend-env env (mlet-var e) (mlet-e e)))]#| }}} |#
+    [(var? e)#| {{{ |#
+     (envlookup env (var-string e))]#| }}} |#
+    [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
 (define (eval-exp e)
