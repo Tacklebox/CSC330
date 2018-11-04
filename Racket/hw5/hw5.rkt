@@ -51,7 +51,9 @@
         [#t (envlookup (cdr env) str)]))#| }}} |#
 
 (define (extend-env env sym val)
-  (cons (cons sym val) env))
+  (if sym
+    (cons (cons sym val) env)
+    env))
 
 (define (eval-under-env e env)
   (cond
@@ -71,7 +73,7 @@
        (if (and (int? v1)
                 (int? v2))
          (if (> (int-num v1) (int-num v2)) (v3) (v4))
-         (error "MUPL isgreater first two arguments must be numbers")))]#| }}} |#
+         (error "MUPL ifgreater first two arguments must be numbers")))]#| }}} |#
     [(isaunit? e)#| {{{ |#
      (let ([u (eval-under-env (isaunit-e e) env)])
        (if (aunit? u) (int 1) (int 0)))]#| }}} |#
@@ -86,24 +88,21 @@
     #| B2 test |#
     [(closure? e) e]
     [(fun? e) (closure env e)]
-    [(call? e)
-     (let ([clo (eval-under-env (call-funexp) env)]
-           [arg (eval-under-env (call-actual) env)])
-       (if (not (closure? clo))
-         (error "called something that wasnt a function")
-         (let ([cfun (closure-fun clo)]
-               [cenv (closure-env clo)])
+    [(call? e)#| {{{ |# (let ([c (eval-under-env (call-funexp e) env)]
+           [arg (eval-under-env (call-actual e) env)])
+       (if (closure? c)
+         (let* ([cfun (closure-fun c)]
+                [cfname (fun-nameopt cfun)]
+                [argsym (fun-formal cfun)]
+                [cenv (closure-env c)])
            (eval-under-env
            (fun-body cfun)
-           (extend-env
-             (if (fun-nameopt cfun)
-               (extend-env cenv (fun-nameopt cfun) clo)
-               cenv)
-             (fun-formal cfun) arg)))))]
+           (extend-env (extend-env cenv cfname c) argsym arg)))
+         (error "MUPL called something that wasnt a function")))]#| }}} |#
     [(mlet? e)#| {{{ |#
      (eval-under-env
        (mlet-body e)
-       (extend-env env (mlet-var e) (mlet-e e)))]#| }}} |#
+       (extend-env env (mlet-var e) (eval-under-env (mlet-e e) env)))]#| }}} |#
     [(var? e)#| {{{ |#
      (envlookup env (var-string e))]#| }}} |#
     [#t (error (format "bad MUPL expression: ~v" e))]))
@@ -114,15 +113,34 @@
 
 ;; Problem C
 
-(define (ifaunit e1 e2 e3) "CHANGE")
+(define (ifaunit e1 e2 e3) (ifgreater (isaunit e1) (int 0) e2 e3))
 
-(define (mlet* lstlst e2) "CHANGE")
+(define (mlet* lstlst e2) #| {{{ |#
+  (letrec
+    ([lethelper (lambda (letlist)
+        (cond
+          [(empty? letlist) e2]
+          [else (mlet
+                  (car (car letlist))
+                  (cdr (car letlist))
+                  (lethelper (cdr letlist)))]))])
+    (lethelper lstlst)
+    ))#| }}} |#
 
-(define (ifeq e1 e2 e3 e4) "CHANGE")
+(define (ifeq e1 e2 e3 e4)
+  (mlet*
+    (list (cons "_x" e1) (cons "_y" e2))
+    (ifgreater
+      (var "_y")
+      (add (int -1) (var "_x"))
+      (ifgreater (var "_x") (add (int -1) (var "_y")) e3 e4) e4)))
 
 ;; Problem D
 
-(define mupl-map "CHANGE")
+(define mupl-map
+  (fun "mupl-map" "f"
+       (fun #f "lst"
+            )))
 ;; this binding is a bit tricky. it must return a function.
 ;; the first two lines should be something like this:
 ;;
